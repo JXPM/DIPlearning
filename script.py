@@ -31,10 +31,10 @@ def connect_db():
 # Ajouter un utilisateur
 def add_user(cursor, conn, username, password, role, current_role, current_username):
     allowed_roles = {
-        'super_admin': ['super_user', 'prof', 'eleve'],  # Super admin peut créer super_user, prof, eleve
-        'super_user': ['prof', 'eleve'],                 # Super user peut créer prof, eleve
-        'prof': ['eleve'],                               # Prof peut créer eleve
-        'eleve': []                                      # Eleve ne peut rien créer
+        'super_admin': ['super_user', 'prof', 'eleve'],
+        'super_user': ['prof', 'eleve'],
+        'prof': ['eleve'],
+        'eleve': []
     }
     if role not in allowed_roles.get(current_role, []):
         print(f"Vous n'avez pas le droit de créer un utilisateur avec le rôle '{role}'.")
@@ -114,30 +114,53 @@ def add_question(cursor, conn):
     conn.commit()
     print("Question ajoutée.")
 
-# Afficher questions pour quiz
+# Afficher questions pour quiz avec scoring
 def play_quiz(cursor, role):
     cursor.execute("SELECT * FROM questions")
     questions = cursor.fetchall()
-    for q in questions:
-        print(f"Question: {q[1]}")
+    if not questions:
+        print("Aucune question disponible. Ajoutez-en d'abord !")
+        return
+    
+    score = 0
+    total_questions = len(questions)
+    print(f"\nQuiz démarré ! {total_questions} questions. Répondez à toutes pour voir votre score.")
+
+    for i, q in enumerate(questions, 1):
+        print(f"\nQuestion {i}/{total_questions}: {q[1]}")
         print(f"1: {q[2]}")
         print(f"2: {q[3]}")
         print(f"3: {q[4]}")
         print(f"4: {q[5]}")
         if role in ['super_admin', 'super_user', 'prof']:
             print(f"(Admin/Prof only) Bonne réponse: {q[6]}, Explication: {q[7]}")
-        answer = input("Votre réponse (1-4): ")
+        
+        answer = input("Votre réponse (1-4): ").strip()
         try:
             answer_int = int(answer)
-            if answer_int == q[6]:
-                print("Correct!")
-            else:
-                if role in ['super_admin', 'super_user', 'prof']:
-                    print(f"Incorrect! La bonne réponse était {q[6]}. Explication: {q[7]}")
+            if 1 <= answer_int <= 4:
+                if answer_int == q[6]:
+                    print("Correct ! +1 point")
+                    score += 1
                 else:
-                    print("Incorrect!")  # Pas de spoiler pour élèves
+                    if role in ['super_admin', 'super_user', 'prof']:
+                        print(f"Incorrect ! La bonne réponse était {q[6]}. Explication: {q[7]}")
+                    else:
+                        print("Incorrect !")
+            else:
+                print("Réponse invalide (doit être 1-4). Pas de point.")
         except ValueError:
-            print("Réponse invalide.")
+            print("Réponse invalide (doit être un nombre). Pas de point.")
+    
+    # Affichage final du score
+    percentage = (score / total_questions) * 100
+    print(f"\nQuiz terminé ! Score: {score}/{total_questions} ({percentage:.0f}%)")
+    if percentage >= 80:
+        print("Excellent !")
+    elif percentage >= 60:
+        print("Bien joué !")
+    else:
+        print("Améliore-toi pour la prochaine !")
 
 # Menu principal
 def main():
