@@ -119,18 +119,7 @@ else:
     # Utilisateur connecté
     st.write(f"Connecté en tant que : **{st.session_state.username}**")
 
-    # Vérifier si déjà passé
-    if has_passed_quiz(st.session_state.user_id):
-        st.warning("Vous avez déjà passé le quiz. Voici vos résultats précédents :")
-        results = get_results(st.session_state.user_id)
-        for score, total, date in results:
-            st.write(f"- Le {date[:19]} : {score} / {total} points")
-        if st.button("Déconnexion"):
-            for key in ['user_id', 'quiz_finished', 'question_index', 'score', 'answers', 'username']:
-                if key in st.session_state:
-                    del st.session_state[key]
-            rerun()
-        st.stop()
+
 
     # Récupérer questions
     questions = get_questions()
