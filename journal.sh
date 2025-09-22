@@ -13,3 +13,11 @@ git status
 git add .
 git commit -m "maj"
 git push origin main
+
+
+# new branche 
+cd DIPlearning/
+git checkout -b mqtt
+git add .
+git commit -m "Ajout du mqtt"
+git push origin mqtt
