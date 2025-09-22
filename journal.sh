@@ -19,5 +19,5 @@ git push origin main
 cd DIPlearning/
 git checkout -b mqtt
 git add .
-git commit -m "Ajout du mqtt"
+git commit -m "Ajout de mqtt"
 git push origin mqtt
