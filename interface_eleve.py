@@ -19,19 +19,22 @@ def rerun():
 def connect_db():
     return sqlite3.connect(DB_PATH)
 
+
+
+
 # Créer table results si elle n'existe pas
 def create_results_table():
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS results (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            score INTEGER NOT NULL,
-            total INTEGER NOT NULL,
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )
+CREATE TABLE IF NOT EXISTS results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    score INTEGER NOT NULL,
+    total INTEGER NOT NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+)
     ''')
     conn.commit()
     conn.close()
@@ -68,22 +71,95 @@ def has_passed_quiz(user_id):
 # Enregistrer résultat
 def save_result(user_id, score, total):
     conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO results (user_id, score, total) VALUES (?, ?, ?)", (user_id, score, total))
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO results (user_id, score, total) VALUES (?, ?, ?)",
+        (user_id, score, total)
+    )
     conn.commit()
     conn.close()
+
+
 
 # Récupérer historique des scores
 def get_results(user_id):
     conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT score, total, date FROM results WHERE user_id=? ORDER BY date DESC", (user_id,))
-    results = cursor.fetchall()
+    cur = conn.cursor()
+    cur.execute("SELECT score, total, date, FROM results WHERE user_id = ?", (user_id,))
+    results = cur.fetchall()
     conn.close()
     return results
 
+
 # Initialiser la table results
 create_results_table()
+
+# --- Afficher l'historique, sans bloquer ---
+
+def get_results(user_id):
+    conn = connect_db()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            SELECT score, total, date
+            FROM results r
+            JOIN users u ON u.id = r.user_id
+            WHERE user_id = ?
+            ORDER BY date DESC
+        """, (user_id,))
+        results = cursor.fetchall()
+    except Exception as e:
+        st.error(f"Erreur lors de la récupération des résultats : {e}")
+        results = []
+    finally:
+        conn.close()
+    return results
+
+# Affichage uniquement si l'utilisateur est connecté
+if 'user_id' in st.session_state:
+    st.markdown("---")
+    st.subheader("📈 Historique de vos tentatives")
+
+    results = get_results(st.session_state.user_id)
+
+    if results:
+        st.markdown("### 📊 Vos tentatives précédentes :")
+        for score, total, date in results:
+            percent = int((score / total) * 100)
+            st.write(f"— 🗓️ {date[:19]} : 🏆 {score}/{total} ({percent}%)")
+    else:
+        st.info("Aucune tentative enregistrée pour ce compte.")
+
+    # --- Boutons d'action ---
+    col1, col2 = st.columns(2)
+    # Initialisation des variables de session si non définies
+    if 'question_index' not in st.session_state:
+        st.session_state.question_index = 0
+
+    if 'score' not in st.session_state:
+        st.session_state.score = 0
+
+    if 'answers' not in st.session_state:
+        st.session_state.answers = []
+
+    if 'quiz_finished' not in st.session_state:
+        st.session_state.quiz_finished = False
+
+    with col1:
+        if st.button("🔁 Recommencer un nouveau quiz"):
+            for key in ['quiz_finished', 'question_index', 'score', 'answers']:
+                if key in st.session_state:
+                    del st.session_state[key]
+            st.rerun()
+
+    with col2:
+        if st.button("🚪 Se déconnecter"):
+            for key in ['user_id', 'username', 'quiz_finished', 'question_index', 'score', 'answers']:
+                if key in st.session_state:
+                    del st.session_state[key]
+            st.rerun()
+
+
 
 st.title("🧑‍🎓 Quiz Élève - Connexion")
 
@@ -118,8 +194,6 @@ if st.session_state.user_id is None:
 else:
     # Utilisateur connecté
     st.write(f"Connecté en tant que : **{st.session_state.username}**")
-
-
 
     # Récupérer questions
     questions = get_questions()
@@ -166,9 +240,9 @@ else:
         st.success("🎉 Quiz terminé !")
         st.write(f"Votre score : **{st.session_state.score} / {len(questions)}**")
 
-        # Enregistrer résultat si pas déjà enregistré
-        if not has_passed_quiz(st.session_state.user_id):
-            save_result(st.session_state.user_id, st.session_state.score, len(questions))
+
+        # Enregistre le résultat à chaque fin de quiz
+        save_result(st.session_state.user_id, st.session_state.score, len(questions))
 
         st.markdown("### 📚 Résumé :")
         for i, (q_id, selected) in enumerate(st.session_state.answers):

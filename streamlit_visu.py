@@ -2,6 +2,9 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 
+
+
+
 # Connexion à la base
 def connect_db():
     return sqlite3.connect("kahoot_local.db")
