@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des utilisateurs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion des utilisateurs</h1>
+
+        <p><a href="{{ url_for('dashboard') }}">← Retour au tableau de bord</a> | <a href="{{ url_for('route_logout') }}">Déconnexion</a></p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2>Ajouter un nouvel utilisateur</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+            <label>Nom d'utilisateur :</label>
+            <input type="text" name="username" required>
+
+            <label>Mot de passe :</label>
+            <input type="password" name="password" required>
+
+            <label>Rôle :</label>
+            <select name="role" required>
+                <option value="super_admin">Super Admin</option>
+                <option value="super_user">Super User</option>
+                <option value="prof">Prof</option>
+                <option value="eleve">Élève</option>
+            </select>
+
+            <button type="submit">Ajouter</button>
+        </form>
+
+        <hr>
+
+        <h2>Utilisateurs existants</h2>
+        {% for user in users %}
+            <form method="POST" class="user-block">
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <input type="hidden" name="action" value="update">
+
+                <label>Nom d'utilisateur :</label>
+                <input type="text" name="username" value="{{ user.username }}" required>
+
+                <label>Nouveau mot de passe :</label>
+                <input type="password" name="password" placeholder="Laisser vide pour ne pas changer">
+
+                <label>Rôle :</label>
+                <select name="role">
+                    <option value="super_admin" {% if user.role == 'super_admin' %}selected{% endif %}>Super Admin</option>
+                    <option value="super_user" {% if user.role == 'super_user' %}selected{% endif %}>Super User</option>
+                    <option value="prof" {% if user.role == 'prof' %}selected{% endif %}>Prof</option>
+                    <option value="eleve" {% if user.role == 'eleve' %}selected{% endif %}>Élève</option>
+                </select>
+
+                <div class="user-actions">
+                    <button type="submit">Mettre à jour</button>
+                </div>
+            </form>
+
+            <form method="POST" onsubmit="return confirm('Supprimer cet utilisateur ?');" class="delete-form">
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" class="delete-btn">Supprimer</button>
+            </form>
+
+            <hr>
+        {% else %}
+            <p>Aucun utilisateur trouvé.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

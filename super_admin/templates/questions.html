@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des questions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion des questions</h1>
+
+        <p><a href="{{ url_for('dashboard') }}">← Retour au tableau de bord</a> | <a href="{{ url_for('route_logout') }}">Déconnexion</a></p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2>Ajouter une nouvelle question</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+            <label>Texte de la question :</label>
+            <input type="text" name="question_text" required>
+
+            <label>Option 1 :</label>
+            <input type="text" name="option1" required>
+
+            <label>Option 2 :</label>
+            <input type="text" name="option2" required>
+
+            <label>Option 3 :</label>
+            <input type="text" name="option3" required>
+
+            <label>Option 4 :</label>
+            <input type="text" name="option4" required>
+
+            <label>Bonne option (1 à 4) :</label>
+            <input type="number" name="correct_option" min="1" max="4" required>
+
+            <label>Explication :</label>
+            <textarea name="explanation" required></textarea>
+
+            <button type="submit">Ajouter</button>
+        </form>
+
+        <hr>
+
+        <h2>Questions existantes</h2>
+        {% for q in questions %}
+            <form method="POST" class="question-block">
+                <input type="hidden" name="question_id" value="{{ q.id }}">
+                <input type="hidden" name="action" value="update">
+
+                <label>Texte :</label>
+                <input type="text" name="question_text" value="{{ q.question_text }}" required>
+
+                <label>Option 1 :</label>
+                <input type="text" name="option1" value="{{ q.option1 }}" required>
+
+                <label>Option 2 :</label>
+                <input type="text" name="option2" value="{{ q.option2 }}" required>
+
+                <label>Option 3 :</label>
+                <input type="text" name="option3" value="{{ q.option3 }}" required>
+
+                <label>Option 4 :</label>
+                <input type="text" name="option4" value="{{ q.option4 }}" required>
+
+                <label>Bonne option :</label>
+                <input type="number" name="correct_option" value="{{ q.correct_option }}" min="1" max="4" required>
+
+                <label>Explication :</label>
+                <textarea name="explanation" required>{{ q.explanation }}</textarea>
+
+                <div class="question-actions">
+                    <button type="submit">Mettre à jour</button>
+                </div>
+            </form>
+
+            <form method="POST" onsubmit="return confirm('Supprimer cette question ?');" class="delete-form">
+                <input type="hidden" name="question_id" value="{{ q.id }}">
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" class="delete-btn">Supprimer</button>
+            </form>
+
+            <hr>
+        {% else %}
+            <p>Aucune question enregistrée.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

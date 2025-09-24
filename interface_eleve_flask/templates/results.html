@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Résultats</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>📈 Historique de vos tentatives</h2>
+        {% if results %}
+            {% for score, total, date in results %}
+                <div class="result-entry">
+                    🗓️ {{ date[:19] }} — 🏆 {{ score }}/{{ total }} ({{ (score / total * 100) | round }}%)
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucune tentative enregistrée.</p>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('rejouer') }}">
+            <button type="submit">🔁 Rejouer un nouveau quiz</button>
+        </form>
+
+        <a href="{{ url_for('logout') }}">🚪 Se déconnecter</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Question {{ index }} / {{ total }}</h2>
+        <p>{{ question['question_text'] }}</p>
+
+        {% if error %}
+            <p style="color:red">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('quiz') }}">
+            <label><input type="radio" name="selected" value="1" required> {{ question['option1'] }}</label><br>
+            <label><input type="radio" name="selected" value="2"> {{ question['option2'] }}</label><br>
+            <label><input type="radio" name="selected" value="3"> {{ question['option3'] }}</label><br>
+            <label><input type="radio" name="selected" value="4"> {{ question['option4'] }}</label><br><br>
+
+            <button type="submit">Valider</button>
+        </form>
+    </div>
+</body>
+</html>

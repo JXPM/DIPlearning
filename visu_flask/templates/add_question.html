@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Ajouter une question{% endblock %}
+
+{% block content %}
+    <h2>➕ Ajouter une nouvelle question</h2>
+
+    <form method="POST">
+        <p><label>Texte de la question:</label><br>
+        <input type="text" name="question_text" required></p>
+
+        <p><label>Option 1:</label><br>
+        <input type="text" name="option1" required></p>
+
+        <p><label>Option 2:</label><br>
+        <input type="text" name="option2" required></p>
+
+        <p><label>Option 3:</label><br>
+        <input type="text" name="option3" required></p>
+
+        <p><label>Option 4:</label><br>
+        <input type="text" name="option4" required></p>
+
+        <p><label>Bonne réponse (1-4):</label><br>
+        <input type="number" name="correct_option" min="1" max="4" required></p>
+
+        <p><label>Explication:</label><br>
+        <textarea name="explanation" required></textarea></p>
+
+        <p><button type="submit">Ajouter</button></p>
+    </form>
+
+    <p><a href="{{ url_for('index') }}">⬅ Retour</a></p>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ table_name }} - Contenu{% endblock %}
+
+{% block content %}
+    <h2>📋 Contenu de la table : {{ table_name }}</h2>
+
+    {% if data %}
+        <table border="1" cellpadding="8" cellspacing="0">
+            <thead>
+                <tr>
+                    {% for col in columns %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        {% for col in columns %}
+                            <td>{{ row[col] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune donnée trouvée dans cette table.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Retour</a></p>
+{% endblock %}

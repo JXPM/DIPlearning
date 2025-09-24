@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Ajouter un utilisateur{% endblock %}
+
+{% block content %}
+    <h2>👤 Ajouter un nouvel utilisateur</h2>
+
+    <form method="POST">
+        <p><label>Nom d'utilisateur:</label><br>
+        <input type="text" name="username" required></p>
+
+        <p><label>Mot de passe:</label><br>
+        <input type="password" name="password" required></p>
+
+        <p><label>Rôle:</label><br>
+        <select name="role" required>
+            <option value="eleve">eleve</option>
+            <option value="prof">prof</option>
+            <option value="super_user">super_user</option>
+            <option value="super_admin">super_admin</option>
+        </select></p>
+
+        <p><button type="submit">Ajouter</button></p>
+    </form>
+
+    <p><a href="{{ url_for('index') }}">⬅ Retour</a></p>
+{% endblock %}

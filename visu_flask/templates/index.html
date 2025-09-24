@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Kahoot Flask{% endblock %}
+
+{% block content %}
+    <h2>📊 Tables disponibles</h2>
+    <ul>
+        {% for table in tables %}
+            <li><a href="{{ url_for('show_table', table_name=table) }}">{{ table }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <p>
+        <a href="{{ url_for('add_question') }}">➕ Ajouter une question</a> |
+        <a href="{{ url_for('add_user') }}">👤 Ajouter un utilisateur</a>
+    </p>
+{% endblock %}

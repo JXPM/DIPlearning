@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Résumé du Quiz</title>
+</head>
+<body>
+    <h1>Bonjour {{ username }}, voici votre résumé :</h1>
+
+    <h2>Score final : {{ score }} / {{ total }}</h2>
+
+    <h3>Détails des réponses :</h3>
+    <ul>
+        {% for a in answers %}
+        <li>
+            <strong>Question :</strong> {{ a.question }} <br>
+            <strong>Votre réponse :</strong> {{ a.selected }} {% if a.is_correct %}✅{% else %}❌{% endif %}<br>
+            {% if not a.is_correct %}
+                <strong>Bonne réponse :</strong> {{ a.correct }}<br>
+                <em>Explication :</em> {{ a.explanation }}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Historique de vos parties :</h3>
+    {% if history %}
+        <ul>
+        {% for r in history %}
+            <li>
+                Date : {{ r['date'] }} - Score : {{ r['score'] }} / {{ r['total'] }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun historique disponible.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('logout') }}">Se déconnecter</a></p>
+</body>
+</html>

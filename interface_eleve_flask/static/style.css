@@ -1,0 +1,102 @@
+/* Style général */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+/* Conteneur principal */
+.container {
+    max-width: 700px;
+    margin: auto;
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Titres */
+h1, h2, h3, h4 {
+    color: #2c3e50;
+}
+
+/* Formulaires */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"],
+input[type="password"],
+button {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Messages */
+.success {
+    color: green;
+}
+
+.error {
+    color: red;
+}
+
+.warning {
+    color: #e67e22;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.question-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+}
+
+/* Liens */
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Résumé */
+.summary-item {
+    border-left: 5px solid #3498db;
+    padding-left: 10px;
+    margin-bottom: 15px;
+}
+
+/* Résultats */
+.result-entry {
+    background-color: #f0f9ff;
+    border-left: 5px solid #2ecc71;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
