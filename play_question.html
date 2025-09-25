@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>🎮 Quiz DIPlearning</h2>
+
+<div id="quiz-container">
+    {% if questions %}
+        <form id="quiz-form">
+            {% for question in questions %}
+            <div class="question-card" style="background: white; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 5px solid #0078d7;">
+                <h3>Question {{ loop.index }} : {{ question.question_text }}</h3>
+                
+                <div class="options">
+                    <label style="display: block; margin: 10px 0;">
+                        <input type="radio" name="q{{ question.id }}" value="1" required>
+                        {{ question.option1 }}
+                    </label>
+                    <label style="display: block; margin: 10px 0;">
+                        <input type="radio" name="q{{ question.id }}" value="2">
+                        {{ question.option2 }}
+                    </label>
+                    <label style="display: block; margin: 10px 0;">
+                        <input type="radio" name="q{{ question.id }}" value="3">
+                        {{ question.option3 }}
+                    </label>
+                    <label style="display: block; margin: 10px 0;">
+                        <input type="radio" name="q{{ question.id }}" value="4">
+                        {{ question.option4 }}
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <button type="submit" class="button"> Voir mon score</button>
+        </form>
+        
+        <div id="results" style="display: none; margin-top: 20px; padding: 20px; background: #e6f7ff; border-radius: 8px;"></div>
+    {% else %}
+        <p>Aucune question disponible pour le moment.</p>
+    {% endif %}
+</div>
+
+<a href="{{ url_for('dashboard') }}" class="button">← Retour au Dashboard</a>
+
+<script>
+document.getElementById('quiz-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const answers = {};
+    
+    for (let [key, value] of formData.entries()) {
+        answers[key.replace('q', '')] = value;
+    }
+    
+    fetch('/submit_quiz', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ answers: answers })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('quiz-form').style.display = 'none';
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('results').innerHTML = `
+            <h3> Résultats du Quiz</h3>
+            <p><strong>Score : ${data.score}/${data.total}</strong></p>
+            <p>Pourcentage : ${data.percentage}%</p>
+            <p>${data.percentage >= 70 ? ' Excellent !' : ' Continuez à apprendre !'}</p>
+        `;
+    });
+});
+</script>
+{% endblock %}

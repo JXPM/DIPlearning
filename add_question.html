@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>➕ Ajouter une Question</h2>
+
+{% if success %}
+    <div style="color: green; margin: 1rem 0; padding: 10px; background: #e6ffe6; border-radius: 4px;">
+        {{ success }}
+    </div>
+{% endif %}
+
+{% if error %}
+    <div style="color: red; margin: 1rem 0; padding: 10px; background: #ffe6e6; border-radius: 4px;">
+        {{ error }}
+    </div>
+{% endif %}
+
+<form method="post" style="max-width: 600px; margin: 0 auto;">
+    <div class="form-group">
+        <label>Question :</label>
+        <textarea name="question_text" rows="3" required></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label>Option 1 :</label>
+        <input type="text" name="option1" required>
+    </div>
+    
+    <div class="form-group">
+        <label>Option 2 :</label>
+        <input type="text" name="option2" required>
+    </div>
+    
+    <div class="form-group">
+        <label>Option 3 :</label>
+        <input type="text" name="option3" required>
+    </div>
+    
+    <div class="form-group">
+        <label>Option 4 :</label>
+        <input type="text" name="option4" required>
+    </div>
+    
+    <div class="form-group">
+        <label>Bonne réponse (1-4) :</label>
+        <select name="correct_option" required>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>Explication :</label>
+        <textarea name="explanation" rows="2"></textarea>
+    </div>
+    
+    <button type="submit" class="button"> Ajouter la question</button>
+    <a href="{{ url_for('quiz') }}" class="button"> Voir les questions</a>
+    <a href="{{ url_for('dashboard') }}" class="button">← Retour au Dashboard</a>
+</form>
+{% endblock %}

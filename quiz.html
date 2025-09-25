@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Liste des Questions</h2>
+
+{% if questions %}
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+            <tr style="background: #004080; color: white;">
+                <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Question</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Options</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Bonne réponse</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr style="border: 1px solid #ddd;">
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ question.id }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ question.question_text }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    1. {{ question.option1 }}<br>
+                    2. {{ question.option2 }}<br>
+                    3. {{ question.option3 }}<br>
+                    4. {{ question.option4 }}
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Option {{ question.correct_option }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucune question dans la base de données.</p>
+{% endif %}
+
+<a href="{{ url_for('add_question') }}" class="button">➕ Ajouter une question</a>
+<a href="{{ url_for('dashboard') }}" class="button">← Retour au Dashboard</a>
+{% endblock %}

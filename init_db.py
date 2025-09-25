@@ -1,14 +1,19 @@
+# init_db.py
+from asyncio.windows_events import NULL
 import sqlite3
+import os
 
 def init_db():
-    conn = sqlite3.connect("diplearning_local.db")
+    db_path = "/home/pi/diplearning_local.db"
+    
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
+            password TEXT,
             role TEXT NOT NULL
         )
     """)
@@ -26,13 +31,25 @@ def init_db():
         )
     """)
 
-    # Bootstrap : créer un super_admin
+    # Bootstrap
     cursor.execute("SELECT COUNT(*) FROM users")
     if cursor.fetchone()[0] == 0:
+        # Super admin
         cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
                        ("superadmin", "password", "super_admin"))
+        # Exemples
+        cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                       ("prof1", "prof123", "prof"))
+        cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                       ("eleve1", NULL, "eleve"))
+        cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                       ("eleve2", NULL, "eleve"))
+        
         conn.commit()
-        print("Super admin par défaut créé : username='superadmin', password='password'.")
+        print("Utilisateurs créés :")
+        print("- superadmin/password (super_admin)")
+        print("- prof1/prof123 (prof)") 
+        print("- eleve1, eleve2 (élèves)")
 
     conn.close()
 

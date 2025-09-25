@@ -3,6 +3,15 @@
     "development"
   ],
   "hints": {
-    "meta-viewport": "off"
+    "meta-viewport": "off",
+    "no-inline-styles": "off",
+    "disown-opener": "off",
+    "axe/forms": [
+      "default",
+      {
+        "label": "off",
+        "select-name": "off"
+      }
+    ]
   }
 }

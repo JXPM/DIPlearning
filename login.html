@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 50px auto;">
+    <h2>Connexion DIPlearning</h2>
+    
+    {% if error %}
+        <div style="color: red; margin: 1rem 0; padding: 10px; background: #ffe6e6; border-radius: 4px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    <form method="post" action="{{ url_for('login') }}">
+        <div style="margin: 20px 0;">
+            <label style="display: block; margin-bottom: 10px; font-weight: bold;">Je suis :</label>
+            
+            <div style="margin: 10px 0;">
+                <input type="radio" id="eleve" name="user_type" value="eleve" required>
+                <label for="eleve">Élève (connexion avec mon nom seulement)</label>
+            </div>
+            
+            <div style="margin: 10px 0;">
+                <input type="radio" id="prof" name="user_type" value="prof">
+                <label for="prof">Professeur (connexion avec nom et mot de passe)</label>
+            </div>
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nom d'utilisateur :</label>
+            <input type="text" name="username" style="width: 100%; padding: 10px;" required>
+        </div>
+        
+        <!-- Champ mot de passe caché par défaut -->
+        <div id="password-field" style="margin: 15px 0; display: none;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Mot de passe :</label>
+            <input type="password" name="password" style="width: 100%; padding: 10px;">
+        </div>
+        
+        <button type="submit" class="button" style="width: 100%; padding: 12px;">Se connecter</button>
+    </form>
+    
+    <div style="margin-top: 30px; padding: 15px; background: #f0f0f0; border-radius: 5px;">
+        <h4>Comment se connecter ?</h4>
+        <p><strong>Élèves :</strong> Entrez un pseudo</p>
+        <p><strong>Professeurs :</strong> Entrez votre nom d'utilisateur & mot de passe</p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const eleveRadio = document.getElementById('eleve');
+    const profRadio = document.getElementById('prof');
+    const passwordField = document.getElementById('password-field');
+    
+    eleveRadio.addEventListener('change', function() {
+        if (this.checked) {
+            passwordField.style.display = 'none';
+        }
+    });
+    
+    profRadio.addEventListener('change', function() {
+        if (this.checked) {
+            passwordField.style.display = 'block';
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIPlearning - Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #004080;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        nav {
+            background: #005a9e;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        nav a:hover {
+            background: #0078d7;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 10px;
+            background: #0078d7;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .button:hover {
+            background: #005a9e;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎓 DIPlearning - Plateforme Quiz</h1>
+        {% if session.user %}
+            <p>Connecté en tant que <strong>{{ session.user.username }}</strong> ({{ session.user.role }})</p>
+        {% endif %}
+    </header>
+    
+    {% if session.user %}
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('wikipedia') }}" target="_blank">📖 Wikipédia</a>
+        {% if session.user.role in ['prof', 'super_admin', 'super_user'] %}
+            <a href="{{ url_for('add_question') }}">➕ Ajouter Question</a>
+            <a href="{{ url_for('quiz') }}">📋 Questions</a>
+        {% endif %}
+        {% if session.user.role == 'super_admin' %}
+            <a href="{{ url_for('admin') }}">⚙️ Admin</a>
+        {% endif %}
+        <a href="{{ url_for('play_quiz') }}">🎮 Jouer</a>
+        <a href="{{ url_for('logout') }}">🚪 Déconnexion</a>
+    </nav>
+    {% endif %}
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
