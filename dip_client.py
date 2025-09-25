@@ -8,9 +8,9 @@ def on_message(client, userdata, msg):
     global response
     response = json.loads(msg.payload.decode())
 
-client = mqtt.Client()
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_message = on_message
-client.connect("raspberrypi.local", 1883, 60)  # Remplace par IP du Pi
+client.connect("192.168.1.42", 1883, 60)  # Remplace par IP du Pi
 client.subscribe("diplearning/response")
 client.loop_start()
 
